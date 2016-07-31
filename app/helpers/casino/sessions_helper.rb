@@ -69,9 +69,14 @@ module CASino::SessionsHelper
   def send_sms(user, message)
     raise "Can't send OTP to user with blank phone number: #{user.username} [id: #{user.id}]" if user.phone.blank?
 
-    sms = SMSC.new
-    ret = sms.send_sms(user.phone, message,  0, 0,  0, 0, CASino.config.sms[:from])
-    raise "Error while sinding sms. Error coder: #{ret.last}" if ret.size == 2
+    if Rails.env.production?
+      sms = SMSC.new
+      ret = sms.send_sms(user.phone, message, 0, 0, 0, 0, CASino.config.sms[:from])
+      raise "Error while sinding sms. Error coder: #{ret.last}" if ret.size == 2
+    else
+      STDERR.puts "Skip sending SMS in #{Rails.env} environment."
+      STDERR.puts "SMS conent: #{message}"
+    end
 
     # @sms = Smsaero::API.new sms_login, sms_password
     # @sms.send user.phone, sms_from, message
