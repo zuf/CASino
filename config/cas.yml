@@ -1,4 +1,9 @@
 defaults: &defaults
+  sms:
+    from: "INFORM"
+    login: "login"
+    password: "secret"
+
   service_ticket:
     lifetime_unconsumed: 299
   authenticators:

@@ -1,4 +1,5 @@
 require 'addressable/uri'
+require 'smsc_api'
 
 module CASino::SessionsHelper
   include CASino::TicketGrantingTicketProcessor
@@ -39,7 +40,7 @@ module CASino::SessionsHelper
   end
 
   def set_tgt_cookie(tgt)
-    cookies[:tgt] = { value: tgt.ticket }.tap do |cookie|
+    cookies[:tgt] = {value: tgt.ticket}.tap do |cookie|
       if tgt.long_term?
         cookie[:expires] = CASino.config.ticket_granting_ticket[:lifetime_long_term].seconds.from_now
       end
@@ -65,9 +66,31 @@ module CASino::SessionsHelper
 
   private
 
+  def send_sms(user, message)
+    raise "Can't send OTP to user with blank phone number: #{user.username} [id: #{user.id}]" if user.phone.blank?
+
+    sms = SMSC.new
+    ret = sms.send_sms(user.phone, message,  0, 0,  0, 0, CASino.config.sms[:from])
+    raise "Error while sinding sms. Error coder: #{ret.last}" if ret.size == 2
+
+    # @sms = Smsaero::API.new sms_login, sms_password
+    # @sms.send user.phone, sms_from, message
+
+    Rails.logger.warn "OTP Send: User: #{user.username} Phone: #{user.phone} Message: #{message}"
+  end
+
+  def send_otp_message_to_user(user, secret=nil)
+    totp = ROTP::TOTP.new(secret || user.active_two_factor_authenticator.secret)
+
+    send_sms(user, "Ваш пароль: #{totp.now}")
+  end
+
   def handle_signed_in(tgt, options = {})
     if tgt.awaiting_two_factor_authentication?
       @ticket_granting_ticket = tgt
+
+      send_otp_message_to_user @ticket_granting_ticket.user
+
       render 'casino/sessions/validate_otp'
     else
       if params[:service].present?

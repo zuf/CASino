@@ -51,6 +51,7 @@ en:
     invalid_two_factor_authenticator: "The two-factor authenticator expired. Please follow the instructions below."
     successfully_activated: "The two-factor authenticator is now linked to this account."
     successfully_deleted: "The two-factor authenticator was successfully deleted."
+    can_not_be_disabled: "The two-factor authentication can't be disabled"
   datetime:
     ago: "%{datetime} ago"
     distance_in_words:

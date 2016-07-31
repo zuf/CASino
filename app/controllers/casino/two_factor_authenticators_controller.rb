@@ -8,7 +8,9 @@ class CASino::TwoFactorAuthenticatorsController < CASino::ApplicationController
   before_action :ensure_signed_in
 
   def new
-    @two_factor_authenticator = current_user.two_factor_authenticators.create! secret: ROTP::Base32.random_base32
+    secret = ROTP::Base32.random_base32
+    @two_factor_authenticator = current_user.two_factor_authenticators.create! secret: secret
+    send_otp_message_to_user(current_user, secret)
   end
 
   def create
@@ -30,11 +32,14 @@ class CASino::TwoFactorAuthenticatorsController < CASino::ApplicationController
   end
 
   def destroy
-    authenticators = current_user.two_factor_authenticators.where(id: params[:id])
-    if authenticators.any?
-      authenticators.first.destroy
-      flash[:notice] = I18n.t('two_factor_authenticators.successfully_deleted')
-    end
+    # authenticators = current_user.two_factor_authenticators.where(id: params[:id])
+    # if authenticators.any?
+    #   authenticators.first.destroy
+    #   flash[:notice] = I18n.t('two_factor_authenticators.successfully_deleted')
+    # end
+
+    flash[:notice] = I18n.t('two_factor_authenticators.can_not_be_disabled')
+
     redirect_to sessions_path
   end
 end
