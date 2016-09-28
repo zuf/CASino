@@ -76,6 +76,11 @@ module CASino::SessionsHelper
     else
       STDERR.puts "Skip sending SMS in #{Rails.env} environment."
       STDERR.puts "SMS conent: #{message}"
+      begin
+        `notify-send -t 20000 'SMS Message to #{user.phone}' '#{message}'`
+      rescue => e
+        STDERR.puts "#{e}"
+      end
     end
 
     # @sms = Smsaero::API.new sms_login, sms_password
