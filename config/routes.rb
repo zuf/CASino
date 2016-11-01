@@ -8,6 +8,7 @@ CASino::Engine.routes.draw do
   post 'login' => 'sessions#create'
   get 'logout' => 'sessions#logout'
   post 'validate_otp' => 'sessions#validate_otp'
+  post 'resend_otp' => 'sessions#resend_otp'
 
   resources :login_attempts, only: [:index]
 
@@ -20,6 +21,8 @@ CASino::Engine.routes.draw do
   get 'proxy' => 'proxy_tickets#create'
 
   get 'authTokenLogin' => 'auth_tokens#login'
+
+
 
   root to: redirect('login')
 

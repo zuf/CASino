@@ -38,9 +38,9 @@ class CASino::SessionsController < CASino::ApplicationController
 
   def destroy_others
     current_user
-      .ticket_granting_tickets
-      .where('id != ?', current_ticket_granting_ticket.id)
-      .destroy_all if signed_in?
+        .ticket_granting_tickets
+        .where('id != ?', current_ticket_granting_ticket.id)
+        .destroy_all if signed_in?
     redirect_to params[:service] || sessions_path
   end
 
@@ -58,6 +58,16 @@ class CASino::SessionsController < CASino::ApplicationController
     @ticket_granting_ticket.update_attribute(:awaiting_two_factor_authentication, false)
     set_tgt_cookie(@ticket_granting_ticket)
     handle_signed_in(@ticket_granting_ticket)
+  end
+
+  def resend_otp
+    @ticket_granting_ticket = find_valid_ticket_granting_ticket(params[:tgt], request.user_agent, ignore_two_factor: true)
+    if @ticket_granting_ticket.present?
+      flash[:notice] = I18n.t('validate_otp.password_was_sent_at', time: I18n.l(Time.now, format: :short))
+      handle_signed_in(@ticket_granting_ticket)
+    else
+      redirect_to login_path
+    end
   end
 
   private
