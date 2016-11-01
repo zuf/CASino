@@ -72,10 +72,10 @@ module CASino::SessionsHelper
     if Rails.env.production?
       sms = SMSC.new
       ret = sms.send_sms(user.phone, message, 0, 0, 0, 0, CASino.config.sms[:from])
-      raise "Error while sinding sms. Error coder: #{ret.last}" if ret.size == 2
+      raise "Error while sending sms. Error code: #{ret.last}" if ret.size == 2
     else
       STDERR.puts "Skip sending SMS in #{Rails.env} environment."
-      STDERR.puts "SMS conent: #{message}"
+      STDERR.puts "SMS text: #{message}"
       begin
         `notify-send -t 20000 'SMS Message to #{user.phone}' '#{message}'`
       rescue => e
