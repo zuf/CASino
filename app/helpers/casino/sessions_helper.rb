@@ -72,7 +72,17 @@ module CASino::SessionsHelper
     if Rails.env.production?
       sms = SMSC.new
       ret = sms.send_sms(user.phone, message, 0, 0, 0, 0, CASino.config.sms[:from])
-      raise "Error while sending sms. Error code: #{ret.last}" if ret.size == 2
+      if ret.size == 2 # ERROR
+        id, error_code = ret
+        error_text = t("code_#{error_code.to_i.abs}", scope: 'smsc.error_codes', default: '')
+        if error_text.present?
+          flash[:error] = I18n.t('validate_otp.smsc_error', error: error_text, error_code: error_code)
+        else
+          raise "Error while sending sms. Error code: #{ret.last}"
+        end
+      else
+        flash[:notice] = I18n.t('validate_otp.password_was_sent_at', time: I18n.l(Time.now, format: :short))
+      end
     else
       STDERR.puts "Skip sending SMS in #{Rails.env} environment."
       STDERR.puts "SMS text: #{message}"

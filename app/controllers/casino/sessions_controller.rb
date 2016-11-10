@@ -63,7 +63,6 @@ class CASino::SessionsController < CASino::ApplicationController
   def resend_otp
     @ticket_granting_ticket = find_valid_ticket_granting_ticket(params[:tgt], request.user_agent, ignore_two_factor: true)
     if @ticket_granting_ticket.present?
-      flash[:notice] = I18n.t('validate_otp.password_was_sent_at', time: I18n.l(Time.now, format: :short))
       handle_signed_in(@ticket_granting_ticket)
     else
       redirect_to login_path

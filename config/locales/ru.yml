@@ -19,6 +19,7 @@ ru:
     invalid_otp: "Введённый одноразовый пароль некорректен."
     password_was_sent_at: "Одноразовый пароль был отправлен в %{time}"
     send_again: "Отправить одноразовый пароль еще раз"
+    smsc_error: "Ошибка отправки SMS: %{error} (Код ошибки: %{error_code})"
   logout:
     title: "Всего доброго!"
     logged_out_without_url: "Сеанс работы завершен."
