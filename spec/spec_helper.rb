@@ -2,6 +2,7 @@
 ENV["RAILS_ENV"] ||= 'test'
 
 require 'coveralls'
+require 'rails-controller-testing'
 Coveralls.wear!
 
 SimpleCov.formatter = Coveralls::SimpleCov::Formatter
