@@ -1,9 +1,10 @@
 require 'spec_helper'
 
 describe CASino::TwoFactorAuthenticatorsController do
+  routes { CASino::Engine.routes }
   include CASino::Engine.routes.url_helpers
   let(:params) { { } }
-  let(:request_options) { params.merge(use_route: :casino) }
+  let(:request_options) {{ params: params }}
 
   describe 'GET "new"' do
     context 'with an existing ticket-granting ticket' do
