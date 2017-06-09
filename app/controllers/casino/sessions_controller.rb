@@ -41,7 +41,7 @@ class CASino::SessionsController < CASino::ApplicationController
       .ticket_granting_tickets
       .where('id != ?', current_ticket_granting_ticket.id)
       .destroy_all if signed_in?
-    redirect_to params[:service] || sessions_path
+    redirect_to params[:service].presence || sessions_path
   end
 
   def logout

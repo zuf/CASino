@@ -7,6 +7,7 @@ class CASino::ApplicationController < ::ApplicationController
 
   unless Rails.env.development?
     rescue_from ActionView::MissingTemplate, with: :missing_template
+    rescue_from ActionController::UnknownFormat, with: :missing_template
   end
 
   def cookies
@@ -14,6 +15,7 @@ class CASino::ApplicationController < ::ApplicationController
   end
 
   protected
+
   def missing_template(exception)
     render plain: 'Format not supported', status: :not_acceptable
   end
