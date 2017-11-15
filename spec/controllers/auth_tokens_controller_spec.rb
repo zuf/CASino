@@ -1,10 +1,12 @@
 require 'spec_helper'
 
 describe CASino::AuthTokensController do
+  routes { CASino::Engine.routes }
+
   include CASino::Engine.routes.url_helpers
 
   let(:params) { { } }
-  let(:request_options) { params.merge(use_route: :casino) }
+  let(:request_options) {{ params: params }}
 
   before(:each) do
     CASino::AuthTokenValidationService.any_instance.stub(:validation_result).and_return(validation_result)

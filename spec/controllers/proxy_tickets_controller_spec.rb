@@ -1,7 +1,9 @@
 require 'spec_helper'
 
 describe CASino::ProxyTicketsController do
-  let(:request_options) { params.merge(use_route: :casino) }
+  routes { CASino::Engine.routes }
+
+  let(:request_options) {{ params: params }}
 
   describe 'GET "proxyValidate"' do
     let(:proxy_ticket) { FactoryGirl.create :proxy_ticket }

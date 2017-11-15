@@ -5,7 +5,7 @@ class CASino::AuthTokenTicket < ActiveRecord::Base
   self.ticket_prefix = 'ATT'.freeze
 
   def self.cleanup
-    delete_all(['created_at < ?', CASino.config.auth_token_ticket[:lifetime].seconds.ago])
+    self.where('created_at < ?', CASino.config.auth_token_ticket[:lifetime].seconds.ago).delete_all
   end
 
   def expired?
